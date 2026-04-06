@@ -1,0 +1,19 @@
+# Node
+node_modules/
+dist/
+.env
+
+# Java
+target/
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# MySQL / configs
+application.properties
