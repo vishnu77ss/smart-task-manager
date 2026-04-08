@@ -20,14 +20,12 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
 
-    // Get the currently authenticated user
     private User getCurrentUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
-    // Convert Task entity to TaskResponse DTO
     private Dtos.TaskResponse toResponse(Task task) {
         return Dtos.TaskResponse.builder()
                 .id(task.getId())
@@ -41,7 +39,6 @@ public class TaskService {
                 .build();
     }
 
-    // Get all tasks with optional filters
     public List<Dtos.TaskResponse> getTasks(String status, String priority) {
         Long userId = getCurrentUser().getId();
         List<Task> tasks;
@@ -65,7 +62,6 @@ public class TaskService {
         return tasks.stream().map(this::toResponse).collect(Collectors.toList());
     }
 
-    // Get single task by ID
     public Dtos.TaskResponse getTaskById(Long id) {
         Long userId = getCurrentUser().getId();
         Task task = taskRepository.findByIdAndUserId(id, userId)
@@ -73,7 +69,6 @@ public class TaskService {
         return toResponse(task);
     }
 
-    // Create a new task
     public Dtos.TaskResponse createTask(Dtos.TaskRequest request) {
         User user = getCurrentUser();
 
@@ -89,7 +84,6 @@ public class TaskService {
         return toResponse(taskRepository.save(task));
     }
 
-    // Update existing task
     public Dtos.TaskResponse updateTask(Long id, Dtos.TaskRequest request) {
         Long userId = getCurrentUser().getId();
         Task task = taskRepository.findByIdAndUserId(id, userId)
@@ -104,7 +98,6 @@ public class TaskService {
         return toResponse(taskRepository.save(task));
     }
 
-    // Delete a task
     public void deleteTask(Long id) {
         Long userId = getCurrentUser().getId();
         Task task = taskRepository.findByIdAndUserId(id, userId)
@@ -112,7 +105,6 @@ public class TaskService {
         taskRepository.delete(task);
     }
 
-    // Get dashboard summary statistics
     public Dtos.DashboardStats getDashboardStats() {
         Long userId = getCurrentUser().getId();
         long total = taskRepository.countByUserId(userId);

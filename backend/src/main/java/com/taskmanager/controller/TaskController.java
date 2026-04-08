@@ -6,7 +6,15 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -17,7 +25,6 @@ public class TaskController {
 
     private final TaskService taskService;
 
-    // GET /api/tasks?status=PENDING&priority=HIGH
     @GetMapping
     public ResponseEntity<List<Dtos.TaskResponse>> getTasks(
             @RequestParam(required = false) String status,
@@ -25,25 +32,21 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getTasks(status, priority));
     }
 
-    // GET /api/tasks/stats
     @GetMapping("/stats")
     public ResponseEntity<Dtos.DashboardStats> getStats() {
         return ResponseEntity.ok(taskService.getDashboardStats());
     }
 
-    // GET /api/tasks/{id}
     @GetMapping("/{id}")
     public ResponseEntity<Dtos.TaskResponse> getTask(@PathVariable Long id) {
         return ResponseEntity.ok(taskService.getTaskById(id));
     }
 
-    // POST /api/tasks
     @PostMapping
     public ResponseEntity<Dtos.TaskResponse> createTask(@Valid @RequestBody Dtos.TaskRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(taskService.createTask(request));
     }
 
-    // PUT /api/tasks/{id}
     @PutMapping("/{id}")
     public ResponseEntity<Dtos.TaskResponse> updateTask(
             @PathVariable Long id,
@@ -51,7 +54,6 @@ public class TaskController {
         return ResponseEntity.ok(taskService.updateTask(id, request));
     }
 
-    // DELETE /api/tasks/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Dtos.ApiResponse> deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
